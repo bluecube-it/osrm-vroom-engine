@@ -46,7 +46,7 @@ docker run -d \
 
 ## 🛠️ Service Architecture
 
-All external traffic enters the container through the Nginx proxy (Port 80). Nginx routes traffic based on the URL path:
+All external traffic enters the container through the Nginx proxy (Port 8080). Nginx routes traffic based on the URL path:
 
 | Service | Container Port | External Endpoint    | Purpose |
 | :--- |:---------------|:---------------------| :--- |
