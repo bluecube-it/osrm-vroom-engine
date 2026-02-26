@@ -43,7 +43,7 @@ jobs:
           push: true
           provenance: false
           tags: ${{ steps.meta.outputs.tags }}
-          platforms: linux/arm64, linux/amd64/v3
+          platforms: linux/arm64, linux/amd64, linux/amd64/v3
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
