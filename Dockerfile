@@ -43,7 +43,7 @@ COPY nginx.conf /etc/nginx/nginx.conf
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
-HEALTHCHECK --start-period=10s CMD curl --fail -s http://127.0.0.1:8080/healthcheck || exit 1
+HEALTHCHECK --start-period=5s --interval=5s --timeout=2s --retries=6 CMD curl --fail -s http://127.0.0.1:8080/healthcheck || exit 1
 
 EXPOSE 8080
 ENTRYPOINT ["/app/entrypoint.sh"]
