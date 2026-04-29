@@ -1,6 +1,6 @@
 ARG ALPINE_VERSION=3.23
-ARG VROOM_VERSION=v1.14.0
-ARG OSRM_VERSION=v6.0.0
+ARG VROOM_VERSION=v1.15.0
+ARG OSRM_VERSION=v26.4
 
 FROM --platform=linux/amd64 ghcr.io/project-osrm/osrm-backend:${OSRM_VERSION} AS osrm_builder
 FROM --platform=linux/amd64 ghcr.io/vroom-project/vroom-docker:${VROOM_VERSION} AS vroom_node_builder
