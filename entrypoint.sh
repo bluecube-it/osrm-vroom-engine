@@ -60,8 +60,8 @@ until curl --output /dev/null --silent --fail "$OSRM_HOST/route/v1/driving/0,0;0
         kill $OSRM_PID 2>/dev/null
         exit 1
     fi
-    echo "OSRM unavailable (waiting 5s)..."
-    sleep 5
+    echo "OSRM unavailable (waiting 2s)..."
+    sleep 2
 done
 echo "✅ OSRM is ready."
 
@@ -79,8 +79,8 @@ until curl --output /dev/null --silent --fail "$VROOM_HOST/health"; do
         kill $VROOM_PID 2>/dev/null
         exit 1
     fi
-    echo "VROOM unavailable (waiting 5s)..."
-    sleep 5
+    echo "VROOM unavailable (waiting 2s)..."
+    sleep 2
 done
 echo "✅ VROOM is ready."
 
