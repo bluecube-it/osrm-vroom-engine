@@ -18,4 +18,4 @@ routingServers:
   osrm:
     car:
       host: 'localhost'
-      port: '5000'
+      port: '5001'   # osrm-proxy (injects radiuses) — proxies to osrm-routed on :5000
