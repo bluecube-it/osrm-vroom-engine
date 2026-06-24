@@ -40,6 +40,7 @@ RUN apk --update --no-cache add \
 
 WORKDIR /app
 COPY nginx.conf /etc/nginx/nginx.conf
+COPY osrm-proxy.js .
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 

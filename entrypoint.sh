@@ -66,7 +66,32 @@ done
 echo "✅ OSRM is ready."
 
 
-echo "Starting VROOM-express (using OSRM at $OSRM_HOST)"
+# Start the osrm-radiuses proxy on :5001 → forwards to osrm-routed :5000
+# with `radiuses` always overridden (default 50m, configurable via
+# OSRM_DEFAULT_RADIUS env var).
+echo "Starting osrm-radiuses proxy on port 5001 (→ $OSRM_HOST)..."
+node /app/osrm-proxy.js &
+PROXY_PID=$!
+echo "Waiting for osrm-radiuses proxy to become ready on 127.0.0.1:5001..."
+start_time=$(date +%s)
+# Don't use --fail: OSRM may return 400 for the test coordinates (0,0
+# is in the ocean and will get NoSegment with radiuses).  We only need
+# to know the proxy itself is up and forwarding — any HTTP response counts.
+until curl --output /dev/null --silent "http://127.0.0.1:5001/route/v1/driving/0,0;0,0" 2>/dev/null; do
+    current_time=$(date +%s)
+    if [ $((current_time - start_time)) -ge $TIMEOUT ]; then
+        echo "Critical Error: Timeout reached. osrm-radiuses proxy failed to start correctly."
+        kill $OSRM_PID 2>/dev/null
+        kill $PROXY_PID 2>/dev/null
+        exit 1
+    fi
+    echo "osrm-proxy unavailable (waiting 2s)..."
+    sleep 2
+done
+echo "✅ osrm-radiuses proxy is ready (radius=${OSRM_DEFAULT_RADIUS:-50}m, always override)."
+
+
+echo "Starting VROOM-express (using OSRM proxy at http://127.0.0.1:5001)"
 cd /vroom-express && npm start &
 VROOM_PID=$!
 echo "Waiting for VROOM-express to become ready on $VROOM_HOST..."
@@ -76,6 +101,7 @@ until curl --output /dev/null --silent --fail "$VROOM_HOST/health"; do
     if [ $((current_time - start_time)) -ge $TIMEOUT ]; then
         echo "Critical Error: Timeout reached. VROOM failed to start correctly."
         kill $OSRM_PID 2>/dev/null
+        kill $PROXY_PID 2>/dev/null
         kill $VROOM_PID 2>/dev/null
         exit 1
     fi
